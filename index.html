@@ -23,7 +23,7 @@
 	<body>
 		<div class="container">
 			<div id="dwtcontrolContainer"></div>
-			<div>
+			<div class="side">
 				<div>
 					Select Source
 					<br />
@@ -93,12 +93,12 @@
 				/>
 				<input
 					type="button"
-					value="Save 1"
+					value="Save 1 (Multi Page)"
 					onclick="SaveToLocalAsPdf();"
 				/>
 				<input
 					type="button"
-					value="Save 2"
+					value="Save 2 (Single Page)"
 					onclick="SaveToLocalAsPdfSingly();"
 				/>
 				<input
@@ -119,6 +119,7 @@
 			function Dynamsoft_OnReady() {
 				DWObject = Dynamsoft.DWT.GetWebTwain("dwtcontrolContainer");
 				if (DWObject) {
+					DWObject.Viewer.setViewMode(2, 2);
 					deviceList = [];
 					DWObject.GetDevicesAsync()
 						.then(function (devices) {
@@ -177,7 +178,6 @@
 					if (DWObject.HowManyImagesInBuffer > 0) {
 						DWObject.IfShowFileDialog = true;
 						DWObject.SaveAllAsPDF("result.pdf", OnSuccess, OnFailure);
-						
 					}
 				}
 			}
@@ -210,20 +210,20 @@
 					OnFailure
 				);
 			}
-		
-      function RemoveBlankImage() {
-        DWObject.RegisterEvent("OnPostTransferAsync", function () {
-		    	let index = DWObject.CurrentImageIndexInBuffer;
-		    	if (DWObject.IsBlankImage(index))
-		       DWObject.RemoveImage(index);
-		    });
-      }
 
-      function RemoveAllImages() {
-        if(DWObject) {
-          DWObject.RemoveAllImages();
-        }
-      }
-    </script>
+			function RemoveBlankImage() {
+				DWObject.RegisterEvent("OnPostTransferAsync", function () {
+					let index = DWObject.CurrentImageIndexInBuffer;
+					if (DWObject.IsBlankImage(index)) DWObject.RemoveImage(index);
+				});
+			}
+
+			function RemoveAllImages() {
+				if (DWObject) {
+					DWObject.RemoveAllImages();
+				}
+			}
+
+		</script>
 	</body>
 </html>
