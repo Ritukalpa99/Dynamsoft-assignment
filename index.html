@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0"
+		/>
+		<title>Dynasoft Assignment</title>
+    <link rel="stylesheet" href="./styles.css">
+		<script
+			type="text/javascript"
+			src="Resources/dynamsoft.webtwain.initiate.js"
+		></script>
+		<script
+			type="text/javascript"
+			src="Resources/dynamsoft.webtwain.config.js"
+		></script>
+	</head>
+	<body>
+    <div class="container">
+      <div id="dwtcontrolContainer"></div>
+      <div>
+        <input
+          type="button"
+          value="Scan"
+          onclick="AcquireImage();"
+        />
+      </div>
+    </div>
+
+
+
+		<script type="text/javascript">
+			var DWObject;
+			function Dynamsoft_OnReady() {
+				DWObject = Dynamsoft.DWT.GetWebTwain("dwtcontrolContainer");
+			}
+			function AcquireImage() {
+				if (DWObject) {
+					DWObject.SelectSourceAsync()
+						.then(function () {
+							return DWObject.AcquireImageAsync({
+								IfCloseSourceAfterAcquire: true,
+							});
+						})
+						.catch(function (exp) {
+							alert(exp.message);
+						});
+				}
+			}
+		</script>
+	</body>
+</html>
