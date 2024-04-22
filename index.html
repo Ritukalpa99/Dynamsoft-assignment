@@ -109,34 +109,45 @@
 		</div>
 
 		<script type="text/javascript">
-			var DWObject, deviceList;
-			function Dynamsoft_OnReady() {
-				DWObject = Dynamsoft.DWT.GetWebTwain("dwtcontrolContainer");
-        if(DWObject) {
-          deviceList = [];
-          DWObject.GetDevicesAsync().then(function(devices) {
-            for (var i = 0; i < devices.length; i++) { 
+			let DWObject, deviceList;
+        function Dynamsoft_OnReady() {
+            DWObject = Dynamsoft.DWT.GetWebTwain('dwtcontrolContainer'); 
+            if (DWObject) {
+                deviceList=[];
+				DWObject.GetDevicesAsync().then(function(devices){
+					for (let i = 0; i < devices.length; i++) { 
 						document.getElementById('source').options.add(new Option(devices[i].displayName, i)); 
 						deviceList.push(devices[i]);
-             }
-          }).catch(function (exp) {
-            alert(exp.message)
-          });
+                    }
+				}).catch(function (exp) {
+					alert(exp.message);
+				});
+            }
         }
-			}
-			function AcquireImage() {
-				if (DWObject) {
-					DWObject.SelectSourceAsync()
-						.then(function () {
-							return DWObject.AcquireImageAsync({
-								IfCloseSourceAfterAcquire: true,
-							});
-						})
-						.catch(function (exp) {
-							alert(exp.message);
-						});
+        function AcquireImage() {
+            if (DWObject) {
+				let i, iPixelType = 0;
+				for (i = 0; i < 3; i++) {
+					if (document.getElementsByName('PixelType').item(i).checked == true)
+						iPixelType = i;
 				}
-			}
+				
+				let ddlSource = document.getElementById('source');
+				if (ddlSource) {
+					DWObject.SelectDeviceAsync(deviceList[ddlSource.selectedIndex]).then(function () {
+						return DWObject.AcquireImageAsync({
+								IfShowUI: document.getElementById('ShowUI').checked, 
+								PixelType: iPixelType,
+								Resolution: document.getElementById('Resolution').value,
+								IfFeederEnabled: document.getElementById('ADF').checked,
+								IfCloseSourceAfterAcquire: true 
+							});
+					}).catch(function (exp) {
+						alert(exp.message);
+					});
+				}
+            }
+        }
 		</script>
 	</body>
 </html>
