@@ -7,7 +7,10 @@
 			content="width=device-width, initial-scale=1.0"
 		/>
 		<title>Dynasoft Assignment</title>
-    <link rel="stylesheet" href="./styles.css">
+		<link
+			rel="stylesheet"
+			href="./styles.css"
+		/>
 		<script
 			type="text/javascript"
 			src="Resources/dynamsoft.webtwain.initiate.js"
@@ -18,23 +21,108 @@
 		></script>
 	</head>
 	<body>
-    <div class="container">
-      <div id="dwtcontrolContainer"></div>
-      <div>
-        <input
-          type="button"
-          value="Scan"
-          onclick="AcquireImage();"
-        />
-      </div>
-    </div>
-
-
+		<div class="container">
+			<div id="dwtcontrolContainer"></div>
+			<div>
+				<div>
+					Select Source
+					<br />
+					<select
+						size="1"
+						id="source"
+						style="width: 200px"
+					></select>
+				</div>
+				<div>
+					<label>
+						<input
+							type="checkbox"
+							id="ADF"
+							checked="checked"
+						/>Auto Feeder
+					</label>
+					<label>
+						<input
+							type="checkbox"
+							id="ShowUI"
+							checked="checked" />Show UI<br
+					/></label>
+				</div>
+				<div>
+					Pixel Type:
+					<label for="BW"
+						><input
+							type="radio"
+							id="BW"
+							name="PixelType"
+						/>B&amp;W
+					</label>
+					<label for="Gray"
+						><input
+							type="radio"
+							id="Gray"
+							name="PixelType"
+						/>Gray</label
+					>
+					<label for="RGB"
+						><input
+							type="radio"
+							id="RGB"
+							name="PixelType"
+							checked="checked"
+						/>Color</label
+					>
+				</div>
+				<div>
+					Resolution:
+					<select
+						size="1"
+						id="Resolution"
+					>
+						<option value="100">100</option>
+						<option value="150">150</option>
+						<option value="200">200</option>
+						<option value="300">300</option>
+					</select>
+				</div>
+				<input
+					type="button"
+					value="Scan and Save 1"
+					onclick="AcquireImage();"
+				/>
+				<input
+					type="button"
+					value="Scan and Save 2"
+					onclick="AcquireImage();"
+				/>
+				<input
+					type="button"
+					value="Remove Blank Images"
+					onclick="AcquireImage();"
+				/>
+				<input
+					type="button"
+					value="Remove All Images"
+					onclick="AcquireImage();"
+				/>
+			</div>
+		</div>
 
 		<script type="text/javascript">
-			var DWObject;
+			var DWObject, deviceList;
 			function Dynamsoft_OnReady() {
 				DWObject = Dynamsoft.DWT.GetWebTwain("dwtcontrolContainer");
+        if(DWObject) {
+          deviceList = [];
+          DWObject.GetDevicesAsync().then(function(devices) {
+            for (var i = 0; i < devices.length; i++) { 
+						document.getElementById('source').options.add(new Option(devices[i].displayName, i)); 
+						deviceList.push(devices[i]);
+             }
+          }).catch(function (exp) {
+            alert(exp.message)
+          });
+        }
 			}
 			function AcquireImage() {
 				if (DWObject) {
