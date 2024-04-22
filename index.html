@@ -109,7 +109,7 @@
 				<input
 					type="button"
 					value="Remove All Images"
-					onclick="AcquireImage();"
+					onclick="RemoveAllImages();"
 				/>
 			</div>
 		</div>
@@ -217,6 +217,12 @@
 		    	if (DWObject.IsBlankImage(index))
 		       DWObject.RemoveImage(index);
 		    });
+      }
+
+      function RemoveAllImages() {
+        if(DWObject) {
+          DWObject.RemoveAllImages();
+        }
       }
     </script>
 	</body>
