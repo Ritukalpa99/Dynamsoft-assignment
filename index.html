@@ -104,7 +104,7 @@
 				<input
 					type="button"
 					value="Remove Blank Images"
-					onclick="AcquireImage();"
+					onclick="RemoveBlankImage();"
 				/>
 				<input
 					type="button"
@@ -152,6 +152,7 @@
 									PixelType: iPixelType,
 									Resolution: document.getElementById("Resolution").value,
 									IfFeederEnabled: document.getElementById("ADF").checked,
+
 									IfCloseSourceAfterAcquire: true,
 								});
 							})
@@ -194,12 +195,8 @@
 								DWObject.SaveSelectedImagesAsMultiPagePDF(
 									path + "_" + i.toString() + ".pdf",
 									i,
-									function () {
-										console.log("Successful!");
-									},
-									function (errCode, errString) {
-										console.log(errString);
-									}
+									OnSuccess,
+									OnFailure
 								);
 							}
 						}
@@ -209,14 +206,18 @@
 				DWObject.SaveSelectedImagesAsMultiPagePDF(
 					"Image",
 					1,
-					function () {
-						console.log("Successful!");
-					},
-					function (errCode, errString) {
-						console.log(errString);
-					}
+					OnSuccess,
+					OnFailure
 				);
 			}
-		</script>
+		
+      function RemoveBlankImage() {
+        DWObject.RegisterEvent("OnPostTransferAsync", function () {
+		    	let index = DWObject.CurrentImageIndexInBuffer;
+		    	if (DWObject.IsBlankImage(index))
+		       DWObject.RemoveImage(index);
+		    });
+      }
+    </script>
 	</body>
 </html>
